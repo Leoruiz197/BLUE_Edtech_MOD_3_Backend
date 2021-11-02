@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router(); //definindo o router como rotas do express
 
 let listaPessoas = [];
 
@@ -67,4 +67,4 @@ router.delete("/deletar/:id", (req,res) => {
     res.json(listaPessoas);
 });
 
-module.exports = router;
+module.exports = router; // exportando todas as rotas aqui criadas para serem inseridas no index.js
