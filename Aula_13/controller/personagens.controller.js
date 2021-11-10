@@ -2,15 +2,18 @@ const Personagem = require("./../models/personagens");
 
 function validaEntrada(res,requisicao){
     if(!requisicao.nome){
-        return res.status(400).json({message: "nome não foi inserido na requisicao"});
+        res.status(400).json({message: "nome não foi inserido na requisicao"});
+        return true;
     }else if(!requisicao.imagemUrl){
-        return res.status(400).json({message: "a URL da imagem não foi inserida na requisicao"});
+        res.status(400).json({message: "a URL da imagem não foi inserida na requisicao"});
+        return true;
     }
 }
 
 function validaID(res,id){
     if(id.length != 24){
-        return res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
+        res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
+        return true;
     }
 }
 
@@ -24,7 +27,7 @@ exports.getAll = async (req,res) => {
 }
 
 exports.getSingle = async (req,res) => {
-    validaID(res,req.params.id);
+    if(validaID(res,req.params.id)) return;
     await Personagem.findById(req.params.id).then((personagem) => {
         res.status(200).json(personagem);
     }).catch((err) => {
@@ -34,7 +37,7 @@ exports.getSingle = async (req,res) => {
 }
 
 exports.postCreate = async (req,res) => {
-    validaEntrada(res,req.body);
+    if(validaEntrada(res,req.body)) return;
     await Personagem.create(req.body).then( () => {
         res.status(201).json({message: "Personagem inserido com sucesso!!!"})
     }).catch((err) => {
@@ -44,8 +47,8 @@ exports.postCreate = async (req,res) => {
 }
 
 exports.putUpdate = async (req,res) => {
-    validaID(res,req.params.id);
-    validaEntrada(res,req.body);
+    if(validaID(res,req.params.id)) return;
+    if(validaEntrada(res,req.body)) return;
     await Personagem.findByIdAndUpdate(req.params.id,req.body).then(() => {
         res.status(200).json({message: "Personagem atualizado com sucesso!!!"})
     }).catch((err) => {
@@ -55,7 +58,7 @@ exports.putUpdate = async (req,res) => {
 }
 
 exports.delDelete = async (req,res) => {
-    validaID(res,req.params.id);
+    if(validaID(res,req.params.id)) return;
     await Personagem.findByIdAndDelete(req.params.id).then(() => {
         res.status(200).json({message: "Personagem deletado com sucesso!!!"});
     }).catch((err) => {
