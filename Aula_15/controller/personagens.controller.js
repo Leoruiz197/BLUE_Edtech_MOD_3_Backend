@@ -1,46 +1,5 @@
 const Personagem = require("./../models/personagens"); 
 
-function validaEntrada(dados){
-    const listaErros = [true,false];
-
-    // var nome = {
-    //     vazio : false,
-    //     tamanho : true
-    // }
-    // var imagem = {
-    //     vazio : false,
-    // };
-
-    // if(!dados.nome){
-    //     nome.vazio = true;
-    // }else if(dados.nome.length > 50){
-    //     nome.tamanho = true;
-    // }else{
-    //     nome.tamanho = false;
-    // }
-
-    // if(!dados.imagemUrl){
-    //     imagem.vazio = true;
-    // }
-
-    // // if(isAlphaNumeric(dados.nome)){
-    // //     nome.num = true;
-    // // }
-
-    // listaErros.push(nome);
-    // listaErros.push(imagem);
-
-    //console.log(listaErros);
-    return listaErros;
-}
-
-function validaID(res,id){
-    if(id.length != 24){
-        res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
-        return true;
-    }
-}
-
 exports.getAll = async (req,res) => {
     await Personagem.find({}).then((personagens) => {
         res.status(200).json(personagens);
@@ -51,7 +10,10 @@ exports.getAll = async (req,res) => {
 }
 
 exports.getSingle = async (req,res) => {
-    if(validaID(res,req.params.id)) return;
+    if(id.length != 24){
+        res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
+        return true;
+    }
     await Personagem.findById(req.params.id).then((personagem) => {
         res.status(200).json(personagem);
     }).catch((err) => {
@@ -61,7 +23,14 @@ exports.getSingle = async (req,res) => {
 }
 
 exports.postCreate = async (req,res) => {
-    const lista = validaEntrada(req.body);
+    if(!req.body.nome){
+        res.status(400).json({message: "nome esta vazio"});
+        return;
+    }
+    if(!req.body.imagemUrl){
+        res.status(400).json({message: "URL da imagem esta vazio"});
+        return;
+    }
     
     await Personagem.create(req.body).then( () => {
         res.status(201).json({message: "Personagem inserido com sucesso!!!"})
@@ -72,8 +41,18 @@ exports.postCreate = async (req,res) => {
 }
 
 exports.putUpdate = async (req,res) => {
-    if(validaID(res,req.params.id)) return;
-    if(validaEntrada(req.body)) return;
+    if(id.length != 24){
+        res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
+        return true;
+    }
+    if(!req.body.nome){
+        res.status(400).json({message: "nome esta vazio"});
+        return;
+    }
+    if(!req.body.imagemUrl){
+        res.status(400).json({message: "URL da imagem esta vazio"});
+        return;
+    }
     await Personagem.findByIdAndUpdate(req.params.id,req.body).then(() => {
         res.status(200).json({message: "Personagem atualizado com sucesso!!!"})
     }).catch((err) => {
@@ -83,7 +62,10 @@ exports.putUpdate = async (req,res) => {
 }
 
 exports.delDelete = async (req,res) => {
-    if(validaID(res,req.params.id)) return;
+    if(id.length != 24){
+        res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
+        return true;
+    }
     await Personagem.findByIdAndDelete(req.params.id).then(() => {
         res.status(200).json({message: "Personagem deletado com sucesso!!!"});
     }).catch((err) => {
