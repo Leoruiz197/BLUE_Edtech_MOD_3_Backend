@@ -10,7 +10,7 @@ exports.getAll = async (req,res) => {
 }
 
 exports.getSingle = async (req,res) => {
-    if(id.length != 24){
+    if(req.params.id.length != 24){
         res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
         return true;
     }
@@ -41,7 +41,7 @@ exports.postCreate = async (req,res) => {
 }
 
 exports.putUpdate = async (req,res) => {
-    if(id.length != 24){
+    if(req.params.id.length != 24){
         res.status(400).json({message: "ERROR: O id precisa ter 24 caracteres"});
         return true;
     }
